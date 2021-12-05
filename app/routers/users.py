@@ -23,6 +23,7 @@ class UserIn(BaseModel):
     userName: str
     password: str = Field(None, title="passworld", min_length=10)
     email: EmailStr
+    age: int = Field(None, title="age", gt=18)
     fullName: Optional[str] = None
 
 class UserOut(BaseModel):
