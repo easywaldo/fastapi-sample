@@ -42,7 +42,7 @@ class UserOut(BaseModel):
 async def read_root():
     return userList
 
-@router.post("/user/", response_model=UserOut)
+@router.post("/user/", response_model=UserOut, status_code=201)
 async def create_user(user: UserIn):
     userList.append(User(
         len(userList), user.userName, datetime.now(tz=None), user.tags))
