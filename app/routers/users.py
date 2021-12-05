@@ -1,7 +1,7 @@
 from typing import Optional
 from datetime import date
 from fastapi import APIRouter
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 
 router = APIRouter()
 
@@ -20,13 +20,13 @@ class User(BaseModel):
     joined: date
 
 class UserIn(BaseModel):
-    username: str
-    password: str
+    userName: str
+    password: str = Field(None, title="passworld", min_length=10)
     email: EmailStr
     fullName: Optional[str] = None
 
 class UserOut(BaseModel):
-    username: str
+    userName: str
     email: EmailStr
     fullName: Optional[str] = None
 
