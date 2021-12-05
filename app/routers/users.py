@@ -1,8 +1,11 @@
+from typing import Optional
 from datetime import date
 from fastapi import APIRouter
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 router = APIRouter()
+
+userList = []
 
 # Declare a variable as a str
 # and get editor support inside the function
@@ -16,16 +19,22 @@ class User(BaseModel):
     name: str
     joined: date
 
+class UserIn(BaseModel):
+    username: str
+    password: str
+    email: EmailStr
+    fullName: Optional[str] = None
+
+class UserOut(BaseModel):
+    username: str
+    email: EmailStr
+    fullName: Optional[str] = None
 
 @router.get("/users", tags=['users'])
 async def read_root():
-    my_user: User = User(id=3, name="John Doe", joined="2018-07-19")
+    return userList
 
-    second_user_data = {
-        "id": 4,
-        "name": "Mary",
-        "joined": "2018-11-30",
-    }
-
-    my_second_user: User = User(**second_user_data)
-    return my_second_user
+@router.post("/user/", response_model=UserOut)
+async def create_user(user: UserIn):
+    userList.append(user)
+    return user
