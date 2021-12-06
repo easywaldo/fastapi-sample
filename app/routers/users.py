@@ -47,3 +47,10 @@ async def create_user(user: UserIn):
     userList.append(User(
         len(userList), user.userName, datetime.now(tz=None), user.tags))
     return user
+
+@router.delete("/user/{userSeq}")
+async def delete_user(userSeq: int):
+    if (userList == []):
+        return "empty"
+    userList.remove(userList[userSeq])
+    return "removed"
