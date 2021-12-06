@@ -44,13 +44,43 @@ async def read_root():
 
 @router.post("/user/", response_model=UserOut, status_code=201)
 async def create_user(user: UserIn = Body(...,
-    example={
-        "userName": "easywaldo",
-        "password": "mypassword",
-        "email": "tester@gmail.com",
-        "age": 20,
-        "fullName": "easywaldo",
-        "tags": ["python", "c#", "java", "go", "php", "javascript", "typescript", "elastic search"]
+    examples={
+        "normal": {
+            "surmmary": "a normal example",
+            "description": "correct sample",
+            "value": {    
+                "userName": "easywaldo",
+                "password": "mypassword",
+                "email": "tester@gmail.com",
+                "age": 20,
+                "fullName": "easywaldo",
+                "tags": ["python", "c#", "java", "go", "php", "javascript", "typescript", "elastic search"]
+            }
+        },
+        "converted": {
+            "surmmary": "a converted example",
+            "description": "converted sample",
+            "value": {    
+                "userName": "easywaldo",
+                "password": "mypassword",
+                "email": "tester@gmail.com",
+                "age": 20,
+                "fullName": "easywaldo",
+                "tags": []
+            }
+        },
+        "invalid": {
+            "surmmary": "a invalid example",
+            "description": "invalid sample",
+            "value": {    
+                "userName": "easywaldo",
+                "password": "12",
+                "email": "tester@gmail.com",
+                "age": 5,
+                "fullName": "easywaldo",
+                "tags": []
+            }
+        }
     })):
     userList.append(User(
         len(userList), user.userName, datetime.now(tz=None), user.tags))
