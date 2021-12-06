@@ -1,6 +1,6 @@
 from typing import Optional
 from datetime import datetime
-from fastapi import APIRouter
+from fastapi import Body, APIRouter
 from pydantic import BaseModel, EmailStr, Field
 
 router = APIRouter()
@@ -43,7 +43,15 @@ async def read_root():
     return userList
 
 @router.post("/user/", response_model=UserOut, status_code=201)
-async def create_user(user: UserIn):
+async def create_user(user: UserIn = Body(...,
+    example={
+        "userName": "easywaldo",
+        "password": "mypassword",
+        "email": "tester@gmail.com",
+        "age": 20,
+        "fullName": "easywaldo",
+        "tags": ["python", "c#", "java", "go", "php", "javascript", "typescript", "elastic search"]
+    })):
     userList.append(User(
         len(userList), user.userName, datetime.now(tz=None), user.tags))
     return user
