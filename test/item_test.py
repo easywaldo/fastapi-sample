@@ -9,3 +9,8 @@ def test_incorrect_answer():
 
 def test_correct_answer():
     assert func(4) == 5
+
+def test_list_contains_value():
+    list = ["hello world", "good bye", "python"]
+    res = "python" in list
+    assert res == True
