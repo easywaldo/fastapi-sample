@@ -54,3 +54,8 @@ async def delete_user(userSeq: int):
         return "empty"
     userList.remove(userList[userSeq])
     return "removed"
+
+@router.put("/user/{userSeq}/update")
+async def update_user(userSeq: int, user: UserIn):
+    userList[userSeq].email = user.email
+    userList[userSeq].tags = user.tags
