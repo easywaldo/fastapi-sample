@@ -1,6 +1,6 @@
 from typing import Optional
 from datetime import datetime
-from fastapi import Body, APIRouter
+from fastapi import Body, APIRouter, Depends, Header, HTTPException
 from pydantic import BaseModel, EmailStr, Field
 
 router = APIRouter()
@@ -97,3 +97,19 @@ async def delete_user(userSeq: int):
 async def update_user(userSeq: int, user: UserIn):
     userList[userSeq].email = user.email
     userList[userSeq].tags = user.tags
+
+
+async def verify_token(x_token: str = Header(...)):
+    if x_token != "fake-super-secret-token":
+        raise HTTPException(status_code=400, detail="X-Token header invalid")
+
+
+async def verify_key(x_key: str = Header(...)):
+    if x_key != "fake-super-secret-key":
+        raise HTTPException(status_code=400, detail="X-Key header invalid")
+    return x_key
+
+
+@router.get("/userVerity/", dependencies=[Depends(verify_token), Depends(verify_key)])
+async def read_items():
+    return True
