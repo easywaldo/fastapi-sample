@@ -1,6 +1,6 @@
 from typing import Optional
 from datetime import datetime
-from fastapi import Body, APIRouter, Depends, Header, HTTPException
+from fastapi import Body, APIRouter, Depends, Header, HTTPException, Cookie
 from pydantic import BaseModel, EmailStr, Field
 
 router = APIRouter()
@@ -113,3 +113,11 @@ async def verify_key(x_key: str = Header(...)):
 @router.get("/userVerity/", dependencies=[Depends(verify_token), Depends(verify_key)])
 async def read_items():
     return True
+
+@router.get("/userAgent/")
+async def addCookie(user_agent: Optional[str] = Header(None)):
+    return {"User-Agent": user_agent}
+
+@router.get("/getCookie/")
+async def addCookie(ad_id: Optional[str] = Cookie(None)):
+    return {"Ad-Id": ad_id}
