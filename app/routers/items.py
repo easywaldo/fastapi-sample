@@ -1,5 +1,5 @@
 from typing import Optional
-from fastapi import FastAPI, BackgroundTasks, status, HTTPException
+from fastapi import FastAPI, Body, BackgroundTasks, status, HTTPException
 from pydantic import BaseModel, Field
 from bson import ObjectId
 from fastapi import APIRouter
@@ -40,6 +40,22 @@ class Item(BaseModel):
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
 
+class UpdateItem(BaseModel):
+    name: Optional[str]
+    price: float
+    isOffer: Optional[bool] = None
+
+    class Config:
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+        schema_extra = {
+            "example": {
+                "name": "Easywaldo",
+                "price": 10000,
+                "isOffer": True
+            }
+        }
+
 pre_db = [
    {"name": "waldo", "price": 10000, "isOffer": True},
    {"name": "mery", "price": 8000, "isOffer": True}
@@ -71,15 +87,28 @@ async def delete_item(id: str):
 
 
 @router.put("/item/{item_id}")
-def update_item(item_id: int, item: Item):
+def update_item(item_id: str, item: Item):
     return {"item_name": item.name, "item_id": item_id}
 
 @router.put("/item-update/{item_id}", response_model=Item)
-async def update_item(item_id: int, item: Item):
-    update_item_encoded = jsonable_encoder(item)
-    pre_db[item_id] = update_item_encoded
-    return update_item_encoded
+async def update_item(item_id: str, item: UpdateItem = Body(...)):
+    ##update_item_encoded = jsonable_encoder(item)
+    ##pre_db[item_id] = update_item_encoded
+    findItem = {k: v for k, v in item.dict().items() if v is not None}
 
+    if len(findItem) >= 1:
+        update_result = await db["item"].update_one({"_id": item_id}, {"$set": findItem})
+
+        if update_result.modified_count == 1:
+            if (
+                updatedItem := await db["item"].find_one({"_id": item_id})
+            ) is not None:
+                return updatedItem
+
+    if (existingItem := await db["item"].find_one({"_id": item_id})) is not None:
+        return existingItem
+
+    raise HTTPException(status_code=404, detail=f"Student {id} not found")
 
 def write_notification(email: str, message=""):
     with open("email_log.txt", mode="w") as email_file:
