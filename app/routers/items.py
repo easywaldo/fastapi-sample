@@ -1,5 +1,5 @@
 from typing import Optional
-from fastapi import FastAPI, BackgroundTasks, status
+from fastapi import FastAPI, BackgroundTasks, status, HTTPException
 from pydantic import BaseModel, Field
 from bson import ObjectId
 from fastapi import APIRouter
@@ -59,6 +59,15 @@ async def create_item(createItemCommand: Item):
     newItem = await db["item"].insert_one(item)
     cretedItem = await db["item"].find_one({"_id": newItem.inserted_id})
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=cretedItem)
+
+@router.delete("/item/{item_id}", response_description="delete item")
+async def delete_item(id: str):
+    delete_result = await db["item"].delete_one({"_id": id})
+
+    if delete_result.deleted_count == 1:
+        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT)
+
+    raise HTTPException(status_code=404, detail=f"Student {id} not found")
 
 
 @router.put("/item/{item_id}")
