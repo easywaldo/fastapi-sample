@@ -9,6 +9,6 @@ class Starship:
     stats: ClassVar[Dict[str, int]] = {}
 
 
-def test_primes():
+def primes_test():
     primes = [1,2,3,4,5,6,100]
     assert len(primes) == 7
