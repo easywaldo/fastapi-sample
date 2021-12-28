@@ -9,10 +9,13 @@ from fastapi.encoders import jsonable_encoder
 
 import sqlalchemy as db
 from sqlalchemy.sql.expression import select, text
+from sqlalchemy.sql.schema import Sequence
 engine = db.create_engine('mysql+pymysql://tester:test1234!$@127.0.0.1:3306/sample')
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import (Table, Column, String, Integer, MetaData, select, func)
+from flask_sqlalchemy import SQLAlchemy
+
 Session = sessionmaker(bind = engine)
 
 meta = MetaData()
@@ -25,12 +28,18 @@ class Base(object):
     def __tablename__(cls):
         return cls.__name__.lower()
     id = Column(Integer, primary_key=True)
-class Lecture(Base):
-    __tablename__ = 'lecture'
-
-    lecture_id = Column(Integer, primary_key=True)
-    lecture_name = Column(String)
     
+db = SQLAlchemy()
+class Lecture(db.Model):
+    __tablename__ = 'lecture'
+    lecture_name = Column(String(100))
+    lecture_id = Column(Integer, primary_key=True, autoincrement = True)
+    def __init__(self, lecture_name):
+        self.lecture_name = lecture_name
+            
+    def __repr__(self):
+        return "<Lecture(lectureName='%s')>" % (self.lecture_name)
+        
 session = Session()
 
 import os
@@ -154,3 +163,10 @@ async def send_notification(email: str, background_tasks: BackgroundTasks):
 async def lecture_list():
     result = session.query(lecture).all()
     return result
+
+@router.post("/lecture-create")
+async def lecture_create(lectureName: str):
+    lecture = Lecture(lectureName)
+    session.add(lecture)
+    session.commit()
+    return True
