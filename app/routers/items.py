@@ -5,6 +5,34 @@ from bson import ObjectId
 from fastapi import APIRouter
 from fastapi.encoders import jsonable_encoder
 
+
+
+import sqlalchemy as db
+from sqlalchemy.sql.expression import select, text
+engine = db.create_engine('mysql+pymysql://tester:test1234!$@127.0.0.1:3306/sample')
+from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import (Table, Column, String, Integer, MetaData, select, func)
+Session = sessionmaker(bind = engine)
+
+meta = MetaData()
+lecture = Table(
+   'lecture', meta, 
+   Column('lecture_id', Integer, primary_key = True), 
+   Column('lecture_name', String)
+)
+class Base(object):
+    def __tablename__(cls):
+        return cls.__name__.lower()
+    id = Column(Integer, primary_key=True)
+class Lecture(Base):
+    __tablename__ = 'lecture'
+
+    lecture_id = Column(Integer, primary_key=True)
+    lecture_name = Column(String)
+    
+session = Session()
+
 import os
 
 from starlette.responses import JSONResponse
@@ -121,3 +149,8 @@ async def send_notification(email: str, background_tasks: BackgroundTasks):
     background_tasks.add_task(write_notification, email, message="some notification")
     print("routing cpmplted")
     return {"message": "Notification sent in the background"}
+
+@router.get("/lecture-list")
+async def lecture_list():
+    result = session.query(lecture).all()
+    return result
