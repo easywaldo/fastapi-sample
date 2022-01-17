@@ -26,3 +26,11 @@ result2 = [i for i in list3 if greaterThan(i, 50) and isOddNumber(i)]
 
 print(result)
 print(result2)
+
+
+
+def toString(value):
+  return str(value)
+
+result4 = [toString(i) for i in list3]
+print(result4)
