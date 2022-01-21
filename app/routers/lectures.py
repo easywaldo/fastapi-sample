@@ -30,3 +30,10 @@ def findLecture(lecture_id: int):
   session = Session()
   lectureService = LectureService()
   return lectureService.find_lecture(session, lecture_id)
+
+@router.delete('/lecture/{lectureId}', tags=['lectures'])
+def deleteLecture(lectureId: int):
+  session = Session()
+  lectureService = LectureService()
+  lectureService.delete_lecture(session, lectureId)
+  return "success"
