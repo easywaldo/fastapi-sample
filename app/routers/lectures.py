@@ -27,30 +27,26 @@ def get_db():
 
 
 @router.post('/lecture/register', tags=['lectures'])
-async def lectureRegister():
+async def lectureRegister(db: Session = Depends(get_db)):
     lecture = Lecture('python', 'python lecture is the best')
-    session = Session()
     lectureService = LectureService()
-    lectureService.insert_lecture(session, lecture)
+    lectureService.insert_lecture(db, lecture)
     return f'lecture is registered successfully. id is {lecture.id}'
 
 
 @router.get('/lecture/{lecture_id}', tags=['lectures'])
 def findLecture(lecture_id: int, db: Session = Depends(get_db)):
-  ##session = Session()
   lectureService = LectureService()
   return lectureService.find_lecture(db, lecture_id)
 
 @router.delete('/lecture/{lectureId}', tags=['lectures'])
-def deleteLecture(lectureId: int):
-  session = Session()
+def deleteLecture(lectureId: int, db: Session = Depends(get_db)):
   lectureService = LectureService()
-  lectureService.delete_lecture(session, lectureId)
+  lectureService.delete_lecture(db, lectureId)
   return "success"
 
-@router.get('/lecture/list', tags=['lectures'])
-async def lectureList():
-  session = Session()
+@router.get('/lectures', tags=['lectures'])
+def lectureList(db: Session = Depends(get_db)):
   lectureService = LectureService()
-  result = lectureService.list_lecture(session)
-  return "test"
+  result = lectureService.list_lecture(db)
+  return result

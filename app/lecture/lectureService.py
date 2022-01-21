@@ -15,3 +15,6 @@ class LectureService:
     lecture = db.get(Lecture, lectureId)
     db.delete(lecture)
     db.commit()
+
+  def list_lecture(self, db: Session):
+    return db.query(Lecture).all()
