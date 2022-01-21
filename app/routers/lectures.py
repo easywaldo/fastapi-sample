@@ -50,3 +50,8 @@ def lectureList(db: Session = Depends(get_db)):
   lectureService = LectureService()
   result = lectureService.list_lecture(db)
   return result
+
+@router.put('/lecture/{lectureId}', tags=['lectures'])
+async def updateLecture(lectureId: int, db: Session = Depends(get_db)):
+  lectureService = LectureService()
+  lectureService.update_lecture(db, lectureId)

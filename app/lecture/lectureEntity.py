@@ -17,3 +17,6 @@ class Lecture(db.Model):
     def __init__(self, lectureName, lectureDescription):
       self.lectureName = lectureName
       self.lectureDescription = lectureDescription
+
+    def update(self, lectureDescription):
+      self.lectureDescription = lectureDescription

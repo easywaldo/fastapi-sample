@@ -18,3 +18,7 @@ class LectureService:
 
   def list_lecture(self, db: Session):
     return db.query(Lecture).all()
+
+  def update_lecture(self, db: Session, lectureId):
+    db.get(Lecture, lectureId).update("modified lecture")
+    db.commit()
