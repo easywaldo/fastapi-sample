@@ -22,4 +22,4 @@ async def lectureRegister():
     session = Session()
     lectureService = LectureService()
     lectureService.insert_lecture(session, lecture)
-    return "success"
+    return f'lecture is registered successfully. id is {lecture.id}'
