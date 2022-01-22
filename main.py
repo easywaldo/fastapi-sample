@@ -1,11 +1,12 @@
 from typing import Optional
 from fastapi import FastAPI
 from fastapi import Depends, FastAPI
-from app.routers import items, users
+from app.routers import items, users, lectures
 
 
 
-app = FastAPI()
+app = FastAPI(debug=True)
 
 app.include_router(users.router, prefix="/users", tags=["users"])
 app.include_router(items.router, prefix="/items", tags=["items"])
+app.include_router(lectures.router, prefix="/items", tags=["items"])
