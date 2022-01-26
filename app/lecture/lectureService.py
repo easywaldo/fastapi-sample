@@ -1,3 +1,4 @@
+from typing import List
 from sqlalchemy.orm import Session
 
 from app.lecture.lectureEntity import Lecture
@@ -21,4 +22,8 @@ class LectureService:
 
   def update_lecture(self, db: Session, lectureId):
     db.get(Lecture, lectureId).update("modified lecture")
+    db.commit()
+    
+  def bulk_insert_lecture(self, db: Session, lectureList: List[Lecture]):
+    db.add_all(lectureList)
     db.commit()
