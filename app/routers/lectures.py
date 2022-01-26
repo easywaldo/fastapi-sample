@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import Depends, FastAPI, Body, BackgroundTasks, status, HTTPException
 from fastapi import Body, APIRouter
 
@@ -9,6 +10,7 @@ from sqlalchemy import (Table, Column, String, Integer, MetaData, select, func)
 
 from ..lecture.lectureService import LectureService
 from ..lecture.lectureEntity import Lecture
+from ..lecture.registerLectureCommand import RegisterLectureCommand
 
 from ..database import SessionLocal, engine
 
@@ -55,3 +57,13 @@ def lectureList(db: Session = Depends(get_db)):
 async def updateLecture(lectureId: int, db: Session = Depends(get_db)):
   lectureService = LectureService()
   lectureService.update_lecture(db, lectureId)
+
+@router.post('/lecture/bulk/', tags=['lectures'], response_model=str)
+async def bulkInsert(db: Session = Depends(get_db), commandList: List[RegisterLectureCommand] = Body(...)):
+    lectureList: List[Lecture] = []    
+    for command in commandList:
+      lectureList.append(Lecture(command.lectureName, command.lectureDescription))
+      print(command)
+    lectureService = LectureService()
+    lectureService.bulk_insert_lecture(db, lectureList)
+    return "success"
