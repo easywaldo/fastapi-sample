@@ -1,5 +1,0 @@
-motor==2.3.0
-fastapi>=0.68.0,<0.69.0
-pydantic>=1.8.0,<2.0.0
-uvicorn>=0.15.0,<0.16.0
-#export export MONGODB_SAMPLE_URL="mongodb://easywaldo:rlekflqk1Py@cluster0-shard-00-00.figii.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-wyadnv-shard-0&authSource=admin&retryWrites=true&w=majority"  

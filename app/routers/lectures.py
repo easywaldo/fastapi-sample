@@ -67,3 +67,10 @@ async def bulkInsert(db: Session = Depends(get_db), commandList: List[RegisterLe
     lectureService = LectureService()
     lectureService.bulk_insert_lecture(db, lectureList)
     return "success"
+  
+from fastapi.security import OAuth2PasswordBearer
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+@router.post('/lecture/security', tags=['lectures'])
+async def lectureSecurity(token: String = Depends(oauth2_scheme)):
+  return {"token": token}
